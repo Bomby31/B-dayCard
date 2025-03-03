@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Birthday Invitation</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            font-family: 'Comic Sans MS', cursive;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .container {
+            perspective: 1200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .card {
+            width: 90vw;
+            max-width: 900px;
+            height: 90vh;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1s;
+        }
+
+        .card.open {
+            transform: rotateY(-180deg);
+        }
+
+        .card .side {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            box-sizing: border-box;
+        }
+
+        .front, .back {
+            padding: 5%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .front {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            border: 5px solid #ff6f61;
+        }
+
+        .front h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin: 0;
+            text-shadow: 3px 3px 5px rgba(0,0,0,0.3);
+        }
+
+        .front button {
+            margin-top: 30px;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 15px;
+            background: #ff6347;
+            color: white;
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 99, 71, 0.5);
+            transition: background 0.3s;
+        }
+
+        .front button:hover {
+            background: #e04e3c;
+        }
+
+        .back {
+            background: linear-gradient(135deg, #ffffff, #ffe4e1);
+            transform: rotateY(180deg);
+            border: 5px solid #ff6f61;
+        }
+
+        .back h2 {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            margin-bottom: 20px;
+        }
+
+        .back p {
+            font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+            line-height: 1.8;
+            margin: 10px 0;
+        }
+
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card" id="birthdayCard">
+        <div class="side front">
+            <h1>🎉 Invitație de aniversare  🎂</h1>
+            <button onclick="openCard()">Dă Click pe Mine!</button>
+        </div>
+        <div class="side back">
+            <h2>Ești invitat/ă!</h2>
+            <p>Te invit la o petrecere de aniversare pentru a-mi sărbători 23 ani de viață! 🎂🎉</p>
+            <p>🎈 Data: 29 marite 2025</p>
+            <p>🕓 Timp: 12:00 pm - Până mor de oboseală :-)</p>
+            <p>📍 Addresa: Str. Bârzava, nr. 10<br> Ploiești</p>
+            <p>Va fi o zi distractivă cu mâncare delicioasă și multă voie bună! 🥂</p>
+            <p>Te aștept cu drag!</p>
+            <p>Cu drag, Tiberiu</p>
+        </div>
+    </div>
+</div>
+
+<canvas class="confetti" id="confetti"></canvas>
+
+
+<script>
+    function openCard() {
+        const card = document.getElementById('birthdayCard');
+        card.classList.toggle('open');
+        if (card.classList.contains('open')) {
+            startConfetti();
+        }
+    }
+
+    function startConfetti() {
+        const confetti = document.getElementById('confetti');
+        const ctx = confetti.getContext('2d');
+        confetti.width = window.innerWidth;
+        confetti.height = window.innerHeight;
+
+        const pieces = Array.from({ length: 150 }, () => ({
+            x: Math.random() * confetti.width,
+            y: Math.random() * confetti.height - confetti.height,
+            r: Math.random() * 6 + 2,
+            d: Math.random() * 10 + 2,
+            color: `hsl(${Math.random() * 360}, 100%, 70%)`
+        }));
+
+        function update() {
+            ctx.clearRect(0, 0, confetti.width, confetti.height);
+            pieces.forEach(p => {
+                p.y += p.d;
+                if (p.y > confetti.height) p.y = 0;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+            });
+            requestAnimationFrame(update);
+        }
+
+        function fade(element){
+            var op = 1;
+            var timer = setInterval(function(){
+                if(op <= 0.1){
+                    clearInterval(timer);
+                    element.style.display = 'none';
+                    
+                }
+                element.style.opacity = op;
+                element.style.filter = 'alpha(opacity= ' + op * 100 + ")"
+                op -= op * 0.1;
+            }, 50);
+        }
+        update();
+        setTimeout(() => fade(confetti), 2000); // Stop confetti after 2 seconds
+    }
+
+    
+</script>
+
+</body>
+</html>
+
+
+
+<!-- setTimeout(() => {
+    //     card.classList.toggle('open');
+    // }, 2500); // Ensure the card flips after confetti 
+
+    // function startConfetti() {
+        //     const confetti = document.getElementById('confetti');
+        //     const ctx = confetti.getContext('2d');
+        //     confetti.width = window.innerWidth;
+        //     confetti.height = window.innerHeight;
+    
+        //     const pieces = Array.from({ length: 150 }, () => ({
+        //         x: Math.random() * confetti.width,
+        //         y: Math.random() * confetti.height - confetti.height,
+        //         r: Math.random() * 6 + 2,
+        //         d: Math.random() * 10 + 2,
+        //         color: `hsl(${Math.random() * 360}, 100%, 70%)`
+        //     }));
+    
+        //     function update() {
+        //         ctx.clearRect(0, 0, confetti.width, confetti.height);
+        //         pieces.forEach(p => {
+        //             p.y += p.d;
+        //             if (p.y > confetti.height) p.y = 0;
+        //             ctx.beginPath();
+        //             ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        //             ctx.fillStyle = p.color;
+        //             ctx.fill();
+        //         });
+        //         requestAnimationFrame(update);
+        //     }
+    
+        //     update();
+        //     setTimeout(() => confetti.remove(), 2000); // Stop confetti after 2 seconds
+        //} -->
